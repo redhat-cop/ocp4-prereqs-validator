@@ -31,26 +31,26 @@
 
 - name: delete temp file if exists
   file:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     state: absent
   delegate_to: localhost    
 
 - name: create temp file
   file:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     state: touch
   delegate_to: localhost
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "*** Check A records *****\n"
     insertafter: EOF
   delegate_to: localhost
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
@@ -59,14 +59,14 @@
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "\n*** Check PTR records *****\n"
     insertafter: EOF
   delegate_to: localhost
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
@@ -75,14 +75,14 @@
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "\n*** Check API/APPs records *****\n"
     insertafter: EOF
   delegate_to: localhost
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "API record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
@@ -90,7 +90,7 @@
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "APPS wildcard record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == apps_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
@@ -102,23 +102,25 @@
 - name: Define SRV records template
   template:
     src: etcd-srv-records.j2
-    dest: /tmp/etcd-srv-records-tmpl.txt
+    dest: ./etcd-srv-records-tmpl.txt
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
+    dest: ./checks-output.txt
     line: "\n*** Check SRV record *****\n"
     insertafter: EOF
   delegate_to: localhost
 
 - name: append
   lineinfile:
-    dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}} --> RESULT: {% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}"
+    dest: ./checks-output.txt
+    line: "SRV record for {{item.item}} --> RESULT: {% if item.stdout | sort() == lookup('file', './etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
- 
-- name: SHOW RESULTS
-  debug:
-    msg: "{{ lookup('file', '/tmp/checks-output.txt') | to_nice_yaml( width=50, explicit_start=True, explicit_end=True) }}"
+
+- name: delete temp file
+  file:
+    dest: ./etcd-srv-records-tmpl.txt
+    state: absent
+  delegate_to: localhost  
