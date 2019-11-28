@@ -29,7 +29,6 @@
   debug:
     msg: "{{item}}"
   loop: "{{ check_ptr_records_servers.results }}"
-  when: item.stdout != ""  
 
 - name: Populate results dictionary for server PTR records
   set_fact:
