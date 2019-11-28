@@ -127,5 +127,16 @@
 - name: teste
   tags: order
   debug:
-    msg: "{{item.stdout}} - {{ item.stdout | sort() }}"
+    msg: "{{ item.stdout | sort() }}"
+  loop: "{{ check_srv_record.results }}"      
+
+- name: teste 2
+  tags: order
+  debug:
+    msg: "{{ lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() }}"
+
+- name: teste 3
+  tags: order
+  debug:
+    msg: "{% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}"
   loop: "{{ check_srv_record.results }}"      
