@@ -4,18 +4,33 @@
   loop: "{{ groups['all'] }}"
   register: check_a_records_servers
 
-#- name: Populate results dictionary for server A records
-#  set_fact:
-#    servers_a_records: "{{ servers_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
-#  loop: "{{ check_a_records_servers.results }}"
+- name: Check PTR records for servers
+  command: "dig -x {{ hostvars[item]['ansible_host'] }} +short"
+  loop: "{{ groups['all'] }}"
+  register: check_ptr_records_servers
+  when: "'etcd' not in hostvars[item]['group_names']"    
 
-- name: clean file
+- name: Check A records for API and APPS
+  command: "dig {{ item }} +short"
+  loop: 
+    - "{{ hostvars['cluster'][0]['api_url'] }}"
+    - "api-int.{{zone_name}}"
+    - "*.apps.{{zone_name}}"
+  register: check_api_records_servers
+
+- name: Check SRV records
+  command: "dig {{ item }} +short"
+  loop: 
+    - "_etcd-server-ssl._tcp.{{zone_name}} SRV +short"
+  register: check_srv_record
+
+- name: delete temp file if exists
   file:
     dest: /tmp/checks-output.txt
     state: absent
-  delegate_to: localhost
+  delegate_to: localhost    
 
-- name: create file
+- name: create temp file
   file:
     dest: /tmp/checks-output.txt
     state: touch
@@ -44,12 +59,6 @@
     insertafter: EOF
   delegate_to: localhost
 
-- name: Check PTR records for servers
-  command: "dig -x {{ hostvars[item]['ansible_host'] }} +short"
-  loop: "{{ groups['all'] }}"
-  register: check_ptr_records_servers
-  when: "'etcd' not in hostvars[item]['group_names']"    
-
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
@@ -59,32 +68,18 @@
   loop: "{{ check_ptr_records_servers.results }}"  
   when: "'etcd' not in hostvars[item.item]['group_names']"  
 
-- name: Check A records for API and APPS
-  command: "dig {{ item }} +short"
-  loop: 
-    - "api.{{zone_name}}"
-    - "api-int.{{zone_name}}"
-    - "*.apps.{{zone_name}}"
-  register: check_api_records_servers
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "\n*** Check API/APPs records *****\n"
+    insertafter: EOF
+  delegate_to: localhost
 
-- name: Populate results dictionary for api and APPS A records
-  set_fact:
-    api_a_records: "{{ api_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
-  loop: "{{ check_api_records_servers.results }}"
-  when: item is not skipped
-
-- name: Check SRV records
-  command: "dig {{ item }} +short"
-  loop: 
-    - "_etcd-server-ssl._tcp.{{zone_name}} SRV +short"
-  register: check_srv_record
-
-- name: Populate results dictionary for SRV records
-  set_fact:
-    etcd_srv_records: "{{ etcd_srv_records|default({}) | combine( {item.item: item.stdout} ) }}"
-  loop: "{{ check_srv_record.results }}"
-  when: item is not skipped
-
-- name: Check SRV records
-  debug: 
-    msg: "{{ etcd_srv_records }}"    
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "API/APPs record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
+    insertafter: EOF
+  delegate_to: localhost
+  loop: "{{ check_ptr_records_servers.results }}"  
+  when: "'etcd' not in hostvars[item.item]['group_names']"    

@@ -1,3 +1,8 @@
+[cluster:vars]
+api_url=api.ocp.rhbr-labs.com
+api_int_url=api-int.ocp.rhbr-labs.com
+apps_wildcard="*.apps.ocp.rhbr-labs.com"
+
 [bootstrap]
 bootstrap-0.ocp.rhbr-labs.com ansible_host=192.168.0.40 macaddress="00:50:56:16:01:28"
 
