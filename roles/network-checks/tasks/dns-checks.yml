@@ -1,0 +1,49 @@
+---
+- name: Check A records for servers
+  command: "dig {{ item }} +short"
+  loop: "{{ groups['all'] }}"
+  register: check_a_records_servers
+
+- name: result A servers
+  debug: 
+    msg: "{{ check_a_records_servers }}"
+
+- name: Check PTR records for servers
+  command: "dig -x {{ item }} +short"
+  loop: "{{ groups['all']['ansible_host'] }}"
+  register: check_ptr_records_servers
+
+- name: result PTR servers
+  debug: 
+    msg: "{{ check_ptr_records_servers }}"
+
+- name: Check A records for API
+  command: "dig {{ item }} +short"
+  loop: 
+    - "api.{{zone_name}}"
+    - "api-int.{{zone_name}}"
+  register: check_api_records_servers
+
+- name: result A for API
+  debug: 
+    msg: "{{ check_api_records_servers }}"
+
+- name: Check A records for Wildcard
+  command: "dig {{ item }} +short"
+  loop: 
+    - "*.apps.{{zone_name}}"
+  register: check_wildcard_record
+
+- name: Check A records for Wildcard
+  debug: 
+    msg: "{{ check_wildcard_record }}"
+
+- name: Check SRV records
+  command: "dig {{ item }} +short"
+  loop: 
+    - "_etcd-server-ssl._tcp.{{zone_name}} SRV +short"
+  register: check_srv_record
+
+- name: Check SRV records
+  debug: 
+    msg: "{{ check_srv_record }}"    
