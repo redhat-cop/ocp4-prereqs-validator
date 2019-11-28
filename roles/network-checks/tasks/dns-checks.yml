@@ -13,6 +13,12 @@
   debug: 
     msg: "{{ servers_a_records }}"
 
+- name: PTR
+  debug:
+    msg: "{{ hostvars[item][['ansible_host']] }}"
+  loop: "{{ groups['all'] }}"
+  when: "'etcd' not in hostvars[item]['group_names']"
+
 - name: Check PTR records for servers
   command: "dig -x {{ hostvars[item][['ansible_host']] }} +short"
   loop: "{{ groups['all'] }}"
