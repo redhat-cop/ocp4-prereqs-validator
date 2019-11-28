@@ -1,6 +1,6 @@
 ---
 - fail:
-    msg: "{{ {{ hostvars[0]['api_url'] }} }}"
+    msg: "{{ hostvars[0]['api_url'] }}"
 
 - name: Check A records for servers
   command: "dig {{ item }} +short"
