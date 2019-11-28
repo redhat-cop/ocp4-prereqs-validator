@@ -1,7 +1,4 @@
 ---
-- fail:
-    msg: "{{ hostvars['cloud'] }}"
-
 - name: Check A records for servers
   command: "dig {{ item }} +short"
   loop: "{{ groups['all'] }}"
@@ -16,9 +13,9 @@
 - name: Check A records for API and APPS
   command: "dig {{ item }} +short"
   loop: 
-    - "{{ hostvars[0]['api_url'] }}"
-    - "api-int.{{zone_name}}"
-    - "*.apps.{{zone_name}}"
+    - "{{ api_url }}"
+    - "{{ api_int_url }}"
+    - "{{ apps_wildcard }}"
   register: check_api_records_servers
 
 - name: Check SRV records

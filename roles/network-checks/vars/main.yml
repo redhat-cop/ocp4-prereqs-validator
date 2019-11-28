@@ -1,19 +1,7 @@
 ---
 # vars file for ocp-prepare-prereqs
 
-##### named.conf
-subnet: "192.168.0.0"
-mask: "16"
-netmask: "255.255.0.0"
-gateway: "192.168.0.2"
-dns_ip: "192.168.0.10"
-dns_forwarder: "192.168.0.1"
-zone_name: "ocp.rhbr-labs.com"
-reverse_zone_name: "0.168.192.in-addr.arpa"
+api_url: "api.ocp.rhbr-labs.com"
+api_int_url: "api-int.ocp.rhbr-labs.com"
+apps_wildcard: "*.apps.ocp.rhbr-labs.com"
 
-##### zone
-dns_hostname: "infra-services.rhbr-labs.com"
-control_plane_lb_ip: "192.168.0.10"
-apps_lb_ip: "192.168.0.10"
-
-if_name: "ens3"
