@@ -53,7 +53,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.stdout[-1] = item.item %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_ptr_records_servers.results }}"  
