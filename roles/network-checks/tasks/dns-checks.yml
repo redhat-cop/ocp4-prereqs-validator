@@ -24,7 +24,6 @@
   register: check_apps_records_servers  
 
 - name: Check SRV records
-  tags: order
   command: "dig {{ item }} +short"
   loop: 
     - "_etcd-server-ssl._tcp.{{cluster_name}}.{{base_name}} SRV +short"
@@ -117,7 +116,6 @@
   delegate_to: localhost
 
 - name: append
-  tags: order
   lineinfile:
     dest: /tmp/checks-output.txt
     line: "SRV record for {{item.item}} --> RESULT: {% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}\n{{item.stdout}}"
@@ -125,19 +123,3 @@
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
  
-- name: teste
-  tags: order
-  debug:
-    msg: "{{ item.stdout | sort() }}"
-  loop: "{{ check_srv_record.results }}"      
-
-- name: teste 2
-  tags: order
-  debug:
-    msg: "{{ lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() }}"
-
-- name: teste 3
-  tags: order
-  debug:
-    msg: "{% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}"
-  loop: "{{ check_srv_record.results }}"      
