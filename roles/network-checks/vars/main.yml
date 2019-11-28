@@ -1,9 +1,10 @@
 ---
 # vars file for ocp-prepare-prereqs
 
-api_url: "api.ocp.rhbr-labs.com"
-api_int_url: "api-int.ocp.rhbr-labs.com"
-apps_wildcard: "*.apps.ocp.rhbr-labs.com"
-
 base_name: "rhbr-labs.com"
 cluster_name: "ocp"
+
+api_url: "api.{{cluster_name}}.{{base_name}}"
+api_int_url: "api-int.{{cluster_name}}.{{base_name}}"
+apps_wildcard: "*.apps.{{cluster_name}}.{{base_name}}"
+
