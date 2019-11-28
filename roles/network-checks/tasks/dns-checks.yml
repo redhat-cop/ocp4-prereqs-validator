@@ -9,20 +9,27 @@
 #    servers_a_records: "{{ servers_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
 #  loop: "{{ check_a_records_servers.results }}"
 
-- name: Initialize result string
-  set_fact:
-    check_dns_result: "*** Check A records *****"
 
-- name: Populate results dictionary for server A records
-  set_fact:
-    check_dns_result: "{{ check_dns_result|default() | 'A record for {item.item} = {item.stdout} --> RESULT: { item.stdout == hostvars[item]['ansible_host'] }' }}"
-  loop: "{{ check_a_records_servers.results }}"
-
-- name: copy the output to a local file
-  copy:
-    content: "{{ set_fact.stdout }}"
-    dest: "/tmp/checks-output.txt"
+- name: create file
+  file:
+    dest: /tmp/checks-output.txt
+    state: touch
   delegate_to: localhost
+
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "*** Check A records *****"
+    insertafter: EOF
+  delegate_to: localhost
+
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {{ item.stdout == hostvars[item]['ansible_host'] }}'"
+    insertafter: EOF
+  delegate_to: localhost
+  loop: "{{ check_a_records_servers.results }}"  
 
 - name: result A servers
   debug: 
