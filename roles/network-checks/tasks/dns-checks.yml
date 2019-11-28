@@ -26,8 +26,8 @@
   when: "'etcd' not in hostvars[item]['group_names']"    
 
 - name: Populate results dictionary for server PTR records
-  msg:
-    "{{item}}"
+  debug:
+    msg: "{{item}}"
   loop: "{{ check_ptr_records_servers.results }}"
   when: item.stdout != ""  
 
