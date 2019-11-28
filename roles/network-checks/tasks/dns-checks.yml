@@ -1,4 +1,7 @@
 ---
+- fail:
+    msg: "{{ hostvars }}"
+
 - name: Check A records for servers
   command: "dig {{ item }} +short"
   loop: "{{ groups['all'] }}"
