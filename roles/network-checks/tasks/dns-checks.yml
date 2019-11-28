@@ -83,7 +83,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "API record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout = control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "API record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_api_records_servers.results }}"   
@@ -91,7 +91,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "APPS wildcard record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout = control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "APPS wildcard record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == apps_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_apps_records_servers.results }}"   
