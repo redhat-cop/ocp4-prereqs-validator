@@ -1,6 +1,6 @@
 ---
 - fail:
-    msg: "{{ hostvars }}"
+    msg: "{{ hostvars['all'] }}"
 
 - name: Check A records for servers
   command: "dig {{ item }} +short"
