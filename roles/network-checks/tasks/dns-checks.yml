@@ -26,7 +26,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {{ item.stdout == hostvars[item]['ansible_host'] }}'"
+    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {{ item.stdout == hostvars[item.item]['ansible_host'] }}'"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_a_records_servers.results }}"  
