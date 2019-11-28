@@ -103,10 +103,10 @@
   template:
     src: etcd-srv-records.j2
     dest: /tmp/etcd-srv-records-tmpl.txt
-  register: etcd-srv-records-tmpl
+  register: etcd_srv_records_tmpl
 
 - debug:
-    msg: "{{ etcd-srv-records-tmpl }}"
+    msg: "{{ etcd_srv_records_tmpl }}"
 
 
 - name: append
