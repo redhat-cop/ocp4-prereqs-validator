@@ -78,7 +78,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "API/APPs record for {{item.item}}"
+    line: "API/APPs record for {{item.item}} = {{item.stdout}} "
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_api_records_servers.results }}"   
@@ -86,7 +86,14 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}}"
+    line: "\n*** Check SRV record *****\n"
+    insertafter: EOF
+  delegate_to: localhost
+
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "SRV record for {{item.item}} = {{item.stdout}} "
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
