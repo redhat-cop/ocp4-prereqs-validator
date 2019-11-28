@@ -26,12 +26,6 @@
   when: "'etcd' not in hostvars[item]['group_names']"    
 
 - name: Populate results dictionary for server PTR records
-  debug:
-    msg: "{{item}}"
-  loop: "{{ check_ptr_records_servers.results }}"
-  when: item is not skipped   
-
-- name: Populate results dictionary for server PTR records
   set_fact:
     servers_ptr_records: "{{ servers_ptr_records|default({}) | combine( {item.item: item.stdout} ) }}"
   loop: "{{ check_ptr_records_servers.results }}"
@@ -41,26 +35,19 @@
   debug: 
     msg: "{{ servers_ptr_records }}"  
 
-- name: Check A records for API
+- name: Check A records for API and APPS
   command: "dig {{ item }} +short"
   loop: 
     - "api.{{zone_name}}"
     - "api-int.{{zone_name}}"
+    - "*.apps.{{zone_name}}"
   register: check_api_records_servers
 
-- name: result A for API
-  debug: 
-    msg: "{{ check_api_records_servers }}"
-
-- name: Check A records for Wildcard
-  command: "dig {{ item }} +short"
-  loop: 
-    - "*.apps.{{zone_name}}"
-  register: check_wildcard_record
-
-- name: Check A records for Wildcard
-  debug: 
-    msg: "{{ check_wildcard_record }}"
+- name: Populate results dictionary for api and APPS A records
+  set_fact:
+    api_a_records: "{{ api_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
+  loop: "{{ check_api_records_servers.results }}"
+  when: item is not skipped
 
 - name: Check SRV records
   command: "dig {{ item }} +short"
@@ -68,6 +55,12 @@
     - "_etcd-server-ssl._tcp.{{zone_name}} SRV +short"
   register: check_srv_record
 
+- name: Populate results dictionary for SRV records
+  set_fact:
+    etcd_srv_records: "{{ etcd_srv_records|default({}) | combine( {item.item: item.stdout} ) }}"
+  loop: "{{ check_srv_record.results }}"
+  when: item is not skipped
+
 - name: Check SRV records
   debug: 
-    msg: "{{ check_srv_record }}"    
+    msg: "{{ etcd_srv_records }}"    
