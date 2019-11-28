@@ -13,6 +13,10 @@
   debug: 
     msg: "{{ servers_a_records }}"
 
+- name: groups all
+  debug: 
+    msg: "{{ groups['all'] }}"
+
 - name: Check PTR records for servers
   command: "dig -x {{ item }} +short"
   loop: "{{ groups['all']['ansible_host'] }}"
