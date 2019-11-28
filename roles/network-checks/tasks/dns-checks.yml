@@ -20,10 +20,10 @@
   when: "'etcd' not in hostvars[item]['group_names']"
 
 - name: Check PTR records for servers
-  command: "dig -x {{ hostvars[item][['ansible_host']] }} +short"
+  command: "dig -x {{ hostvars[item]['ansible_host'] }} +short"
   loop: "{{ groups['all'] }}"
   register: check_ptr_records_servers
-  when: "'etcd' not in hostvars[item]['group_names'] and 'localhost' not in hostvars[item]['group_names']"    
+  when: "'etcd' not in hostvars[item]['group_names']"    
 
 - name: Populate results dictionary for server PTR records
   set_fact:
