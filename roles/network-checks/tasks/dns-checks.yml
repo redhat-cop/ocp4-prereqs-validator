@@ -29,7 +29,7 @@
   set_fact:
     servers_ptr_records: "{{ servers_ptr_records|default({}) | combine( {item.item: item.stdout} ) }}"
   loop: "{{ check_ptr_records_servers.results }}"
-  when: "'etcd' not in item"      
+  when: "'etcd' not in {{item}}"      
 
 - name: result PTR servers
   debug: 
