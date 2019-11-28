@@ -121,4 +121,4 @@
  
 - name: SHOW RESULTS
   debug:
-    msg: "{{ lookup('file', '/tmp/checks-output.txt') }}"
+    msg: "{{ lookup('file', '/tmp/checks-output.txt') | to_nice_yaml( width=50, explicit_start=True, explicit_end=True) }}"
