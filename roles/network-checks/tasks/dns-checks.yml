@@ -16,11 +16,11 @@
 - name: groups all
   debug: 
     msg: "{{item}} = {{ hostvars[item]['ansible_host'] }} = {{ hostvars[item] }}"
-  loop: "{{  groups['all!etcd'] }}"    
+  loop: "{{  groups['all,!etcd'] }}"    
 
 - name: Check PTR records for servers
   command: "dig -x {{ hostvars[item][['ansible_host']] }} +short"
-  loop: "{{ groups['all!etcd'] }}"
+  loop: "{{ groups['all,!etcd'] }}"
   register: check_ptr_records_servers
 
 - name: result PTR servers
