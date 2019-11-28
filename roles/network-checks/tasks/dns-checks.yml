@@ -119,3 +119,6 @@
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
  
+- name: SHOW RESULTS
+  debug:
+    msg: "{{ lookup('file', '/tmp/checks-output.txt') }}"
