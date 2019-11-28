@@ -15,7 +15,7 @@
 
 - name: PTR
   debug:
-    msg: "{{ hostvars[item][['ansible_host']] }}"
+    msg: "{{ hostvars[item]['ansible_host'] }}"
   loop: "{{ groups['all'] }}"
   when: "'etcd' not in hostvars[item]['group_names']"
 
