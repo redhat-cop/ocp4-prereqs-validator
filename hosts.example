@@ -1,3 +1,9 @@
+[cluster:children]
+bootstrap
+masters
+workers
+etcd
+
 [cluster:vars]
 api_url=api.ocp.rhbr-labs.com
 api_int_url=api-int.ocp.rhbr-labs.com
