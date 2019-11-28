@@ -13,7 +13,7 @@
 - name: Check A records for API and APPS
   command: "dig {{ item }} +short"
   loop: 
-    - "{{ hostvars['cluster'][0]['api_url'] }}"
+    - "{{ api_url }}"
     - "api-int.{{zone_name}}"
     - "*.apps.{{zone_name}}"
   register: check_api_records_servers
