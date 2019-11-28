@@ -104,10 +104,6 @@
     src: etcd-srv-records.j2
     dest: /tmp/etcd-srv-records-tmpl.txt
 
-- debug:
-    msg: "{{ lookup('file', '/tmp/etcd-srv-records-tmpl.txt') }}"
-
-
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
@@ -118,7 +114,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}} --> RESULT: {% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}\n{{item.stdout}}"
+    line: "SRV record for {{item.item}} --> RESULT: {% if item.stdout | sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') | sort() %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
