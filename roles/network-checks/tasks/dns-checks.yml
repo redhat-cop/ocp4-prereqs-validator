@@ -11,11 +11,11 @@
 
 - name: Initialize result string
   set_fact:
-    check_dns_result: "{{ check_dns_result|default() | *** Check A records ***** }}"
+    check_dns_result: "*** Check A records *****"
 
 - name: Populate results dictionary for server A records
   set_fact:
-    check_dns_result: "{{ check_dns_result|default() | A record for {item.item} = {item.stdout} --> RESULT: { item.stdout == hostvars[item]['ansible_host'] } }}"
+    check_dns_result: "{{ check_dns_result|default() | 'A record for {item.item} = {item.stdout} --> RESULT: { item.stdout == hostvars[item]['ansible_host'] }' }}"
   loop: "{{ check_a_records_servers.results }}"
 
 - name: copy the output to a local file
