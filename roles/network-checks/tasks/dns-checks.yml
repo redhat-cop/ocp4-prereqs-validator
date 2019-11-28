@@ -81,8 +81,7 @@
     line: "API/APPs record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
-  loop: "{{ check_api_records_servers.results }}"  
-  when: "'etcd' not in hostvars[item.item]['group_names']"    
+  loop: "{{ check_api_records_servers.results }}"   
 
 - name: append
   lineinfile:
