@@ -24,7 +24,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "*** Check A records *****\n\n"
+    line: "*** Check A records *****\n"
     insertafter: EOF
   delegate_to: localhost
 
@@ -40,7 +40,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "*** Check PTR records *****\n\n"
+    line: "\n*** Check PTR records *****\n"
     insertafter: EOF
   delegate_to: localhost
 
@@ -53,7 +53,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.stdout == item.item %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.stdout in item.item %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_ptr_records_servers.results }}"  
