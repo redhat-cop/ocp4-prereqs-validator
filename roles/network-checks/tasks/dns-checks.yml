@@ -10,13 +10,18 @@
   register: check_ptr_records_servers
   when: "'etcd' not in hostvars[item]['group_names']"    
 
-- name: Check A records for API and APPS
+- name: Check A records for API
   command: "dig {{ item }} +short"
   loop: 
     - "{{ api_url }}"
     - "{{ api_int_url }}"
-    - "{{ apps_wildcard }}"
   register: check_api_records_servers
+
+- name: Check A records for APPS
+  command: "dig {{ item }} +short"
+  loop: 
+    - "{{ apps_wildcard }}"
+  register: check_apps_records_servers  
 
 - name: Check SRV records
   command: "dig {{ item }} +short"
@@ -78,10 +83,18 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "API/APPs record for {{item.item}} = {{item.stdout}} "
+    line: "API record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout = control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_api_records_servers.results }}"   
+
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "APPS wildcard record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout = control_plane_lb_ip %} SUCCESS! {% else %} FAILED! {% endif %}"
+    insertafter: EOF
+  delegate_to: localhost
+  loop: "{{ check_apps_records_servers.results }}"   
 
 - name: append
   lineinfile:
@@ -93,7 +106,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}} = {{item.stdout}} "
+    line: "SRV record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  

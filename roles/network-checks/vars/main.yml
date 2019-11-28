@@ -8,3 +8,5 @@ api_url: "api.{{cluster_name}}.{{base_name}}"
 api_int_url: "api-int.{{cluster_name}}.{{base_name}}"
 apps_wildcard: "*.apps.{{cluster_name}}.{{base_name}}"
 
+control_plane_lb_ip: "192.168.0.10"
+apps_lb_ip: "192.168.0.10"
