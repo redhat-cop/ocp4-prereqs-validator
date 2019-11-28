@@ -82,11 +82,13 @@
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_api_records_servers.results }}"  
+  when: "'etcd' not in hostvars[item.item]['group_names']"    
 
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}}"
+    line: "SRV record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
+ when: "'etcd' not in hostvars[item.item]['group_names']"    
