@@ -29,12 +29,13 @@
   debug:
     msg: "{{item}}"
   loop: "{{ check_ptr_records_servers.results }}"
+  when: item.skipped == false   
 
 - name: Populate results dictionary for server PTR records
   set_fact:
     servers_ptr_records: "{{ servers_ptr_records|default({}) | combine( {item.item: item.stdout} ) }}"
   loop: "{{ check_ptr_records_servers.results }}"
-  when: item.stdout != ""  
+  when: item.skipped == false  
 
 - name: result PTR servers
   debug: 
