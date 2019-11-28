@@ -96,6 +96,19 @@
   delegate_to: localhost
   loop: "{{ check_apps_records_servers.results }}"   
 
+
+##### CHECKING SRV RECORDS
+
+- name: Define SRV records template
+  template:
+    src: etcd-srv-records.j2
+    dest: /tmp/etcd-srv-records-tmpl.txt
+  register: etcd-srv-records-tmpl
+
+- debug:
+    msg: "{{ etcd-srv-records-tmpl }}"
+
+
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
@@ -106,7 +119,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.item in item.stdout %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "SRV record for {{item.item}} =\n{{item.stdout}} --> RESULT: {% if item.stdout = etcd-srv-records-tmpl %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  

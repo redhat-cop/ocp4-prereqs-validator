@@ -1,0 +1,3 @@
+{% for host in groups['masters'] %}
+0 10 2380 etcd-{{loop.index - 1}}.{{cluster_name}}.{{base_name}}.
+{% endfor %}
