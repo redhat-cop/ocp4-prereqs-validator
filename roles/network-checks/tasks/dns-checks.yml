@@ -91,4 +91,4 @@
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
-  when: "'etcd' not in hostvars[item.item]['group_names']"    
+ 
