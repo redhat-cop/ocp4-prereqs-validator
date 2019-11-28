@@ -51,7 +51,7 @@
 - name: append
   lineinfile:
     dest: ./checks-output.txt
-    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "A record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_a_records_servers.results }}"  
