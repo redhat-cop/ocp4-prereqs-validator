@@ -24,28 +24,25 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "*** Check A records *****"
+    line: "*** Check A records *****\n\n"
     insertafter: EOF
   delegate_to: localhost
 
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "*** Check A records *****\n\n\nA record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_a_records_servers.results }}"  
   when: "'etcd' not in hostvars[item.item]['group_names']"  
 
-- name: result A servers
-  debug: 
-    msg: "{{ servers_a_records }}"
-
-- name: PTR
-  debug:
-    msg: "{{ hostvars[item]['ansible_host'] }}"
-  loop: "{{ groups['all'] }}"
-  when: "'etcd' not in hostvars[item]['group_names']"
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "*** Check PTR records *****\n\n"
+    insertafter: EOF
+  delegate_to: localhost
 
 - name: Check PTR records for servers
   command: "dig -x {{ hostvars[item]['ansible_host'] }} +short"
@@ -53,15 +50,14 @@
   register: check_ptr_records_servers
   when: "'etcd' not in hostvars[item]['group_names']"    
 
-- name: Populate results dictionary for server PTR records
-  set_fact:
-    servers_ptr_records: "{{ servers_ptr_records|default({}) | combine( {item.item: item.stdout} ) }}"
-  loop: "{{ check_ptr_records_servers.results }}"
-  when: item is not skipped
-
-- name: result PTR servers
-  debug: 
-    msg: "{{ servers_ptr_records }}"  
+- name: append
+  lineinfile:
+    dest: /tmp/checks-output.txt
+    line: "PTR record for {{item.item}}/{{ hostvars[item.item]['ansible_host'] }} = {{item.stdout}} --> RESULT: {% if item.stdout == item.item %} SUCCESS! {% else %} FAILED! {% endif %}"
+    insertafter: EOF
+  delegate_to: localhost
+  loop: "{{ check_ptr_records_servers.results }}"  
+  when: "'etcd' not in hostvars[item.item]['group_names']"  
 
 - name: Check A records for API and APPS
   command: "dig {{ item }} +short"
