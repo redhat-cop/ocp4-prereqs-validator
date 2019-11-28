@@ -4,12 +4,6 @@
   loop: "{{ groups['all'] }}"
   register: check_a_records_servers
 
-- name: copy the output to a local file
-  copy:
-    content: "{{ myshell_output.stdout }}"
-    dest: "/tmp/hello.txt"
-  delegate_to: localhost
-
 #- name: Populate results dictionary for server A records
 #  set_fact:
 #    servers_a_records: "{{ servers_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
@@ -24,6 +18,11 @@
     check_dns_result: "{{ check_dns_result|default() | A record for {item.item} = {item.stdout} --> RESULT: { item.stdout == hostvars[item]['ansible_host'] } }}"
   loop: "{{ check_a_records_servers.results }}"
 
+- name: copy the output to a local file
+  copy:
+    content: "{{ set_fact.stdout }}"
+    dest: "/tmp/checks-output.txt"
+  delegate_to: localhost
 
 - name: result A servers
   debug: 
