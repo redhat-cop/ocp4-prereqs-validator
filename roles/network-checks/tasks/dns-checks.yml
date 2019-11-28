@@ -9,6 +9,11 @@
 #    servers_a_records: "{{ servers_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
 #  loop: "{{ check_a_records_servers.results }}"
 
+- name: clean file
+  file:
+    dest: /tmp/checks-output.txt
+    state: absent
+  delegate_to: localhost
 
 - name: create file
   file:
@@ -26,7 +31,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "A record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "*** Check A records *****\n\n\nA record for {{item.item}} = {{item.stdout}} --> RESULT: {% if item.stdout == hostvars[item.item]['ansible_host'] %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_a_records_servers.results }}"  
