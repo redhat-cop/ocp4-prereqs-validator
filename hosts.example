@@ -15,6 +15,6 @@ worker-1.ocp.rhbr-labs.com ansible_host=192.168.0.71 macaddress="00:50:56:a1:34:
 worker-2.ocp.rhbr-labs.com ansible_host=192.168.0.72 macaddress="00:50:56:a1:34:4b"
 
 [etcd]
-etcd-0.ocp.rhbr-labs.com
-etcd-1.ocp.rhbr-labs.com
-etcd-2.ocp.rhbr-labs.com
+etcd-0.ocp.rhbr-labs.com ansible_host=192.168.0.50
+etcd-1.ocp.rhbr-labs.com ansible_host=192.168.0.51
+etcd-2.ocp.rhbr-labs.com ansible_host=192.168.0.52

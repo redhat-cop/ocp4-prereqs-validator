@@ -55,7 +55,7 @@
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_a_records_servers.results }}"  
-  when: "'etcd' not in hostvars[item.item]['group_names']"  
+#  when: "'etcd' not in hostvars[item.item]['group_names']"  
 
 - name: append
   lineinfile:
