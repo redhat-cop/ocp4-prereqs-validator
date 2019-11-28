@@ -4,10 +4,14 @@
   loop: "{{ groups['all'] }}"
   register: check_a_records_servers
 
+- name: Populate results dictionary
+  set_fact:
+    servers_a_records: "{{ servers_a_records|default() | combine( {item.item: item.stdout} ) }}"
+  loop: check_a_records_servers.results
+
 - name: result A servers
   debug: 
-    msg: "{{ item['item'] }} = {{ item['stdout'] }}"
-  loop: "{{ check_a_records_servers['results'] }}"
+    msg: "{{ servers_a_records }}"
 
 - name: Check PTR records for servers
   command: "dig -x {{ item }} +short"
