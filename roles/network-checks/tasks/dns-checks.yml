@@ -4,7 +4,7 @@
   loop: "{{ groups['all'] }}"
   register: check_a_records_servers
 
-- name: Populate results dictionary
+- name: Populate results dictionary for server A records
   set_fact:
     servers_a_records: "{{ servers_a_records|default({}) | combine( {item.item: item.stdout} ) }}"
   loop: "{{ check_a_records_servers.results }}"
@@ -19,9 +19,14 @@
   register: check_ptr_records_servers
   when: "'etcd' not in hostvars[item]['group_names']"    
 
+- name: Populate results dictionary for server PTR records
+  set_fact:
+    servers_ptr_records: "{{ servers_ptr_records|default({}) | combine( {item.item: item.stdout} ) }}"
+  loop: "{{ check_ptr_records_servers.results }}"
+
 - name: result PTR servers
   debug: 
-    msg: "{{ check_ptr_records_servers }}"
+    msg: "{{ servers_ptr_records }}"  
 
 - name: Check A records for API
   command: "dig {{ item }} +short"
