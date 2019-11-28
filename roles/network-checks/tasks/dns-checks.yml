@@ -118,7 +118,7 @@
 - name: append
   lineinfile:
     dest: /tmp/checks-output.txt
-    line: "SRV record for {{item.item}} =\n{{item.stdout}} --> RESULT: {% if item.stdout == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') %} SUCCESS! {% else %} FAILED! {% endif %}"
+    line: "SRV record for {{item.item}} =\n{{item.stdout}} --> RESULT: {% if item.stdout.sort() == lookup('file', '/tmp/etcd-srv-records-tmpl.txt') %} SUCCESS! {% else %} FAILED! {% endif %}"
     insertafter: EOF
   delegate_to: localhost
   loop: "{{ check_srv_record.results }}"  
