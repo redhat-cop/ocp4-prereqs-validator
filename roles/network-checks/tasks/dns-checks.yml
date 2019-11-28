@@ -6,7 +6,8 @@
 
 - name: result A servers
   debug: 
-    msg: "{{ check_a_records_servers['results'][0]['item'] }} = {{ check_a_records_servers['results'][0]['stdout'] }}"
+    msg: "{{ item['item'] }} = {{ item['stdout'] }}"
+  loop: "{{ check_a_records_servers['results'] }}"
 
 - name: Check PTR records for servers
   command: "dig -x {{ item }} +short"
