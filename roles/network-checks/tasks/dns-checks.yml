@@ -15,7 +15,7 @@
 
 - name: groups all
   debug: 
-    msg: "{{item}} = {{ hostvars[item].ansible_host }}"
+    msg: "{{item}} = {{ hostvars[item] }}"
   loop: "{{ groups['all'] }}"    
 
 - name: Check PTR records for servers
