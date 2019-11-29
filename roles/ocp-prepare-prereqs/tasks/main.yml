@@ -2,7 +2,7 @@
 # tasks file for ocp-prepare-prereqs
 
 - name: Install Required Packages
-  tags: install_pkgs
+  tags: install_pkgs,httpd
   yum:
     name: "{{ packages }}"
     state: latest      
@@ -91,6 +91,21 @@
     daemon_reload: yes
     name: haproxy  
 
+- name: Change httpd port to 8080
+  tags: httpd
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: 'Listen 80'
+    replace: 'Listen 8080'
+
+- name: Restart and enable httpd
+  tags: httpd
+  systemd:
+    state: restarted
+    enabled: yes    
+    daemon_reload: yes
+    name: httpd    
+
 - name: Configure firewalld services
   firewalld:
     service: "{{ item }}"
@@ -108,5 +123,6 @@
     permanent: yes
     state: enabled      
   with_items:
+    - "8080/tcp"
     - "6443/tcp"
     - "22623/tcp"
