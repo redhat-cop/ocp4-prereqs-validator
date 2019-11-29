@@ -1,6 +1,15 @@
 ---
 # tasks file for ocp-prepare-prereqs
 
+- name: Install Required Packages
+  tags: install_pkgs
+  yum:
+    name: "{{ packages }}"
+    state: latest      
+  vars:
+    packages:
+    - bind-chroot
+
 - name: Check if /etc/named.conf already exists
   tags: conf_dns
   stat:
