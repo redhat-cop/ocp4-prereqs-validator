@@ -1,0 +1,112 @@
+---
+# tasks file for ocp-prepare-prereqs
+
+- name: Install Required Packages
+  tags: install_pkgs
+  yum:
+    name: "{{ packages }}"
+    state: latest      
+  vars:
+    packages:
+    - bind-chroot
+    - tftp-server 
+    - ipxe-bootimgs
+    - dhcp-server
+    - httpd
+    - haproxy
+
+- name: Define named.conf
+  tags: conf_dns
+  template:
+    src: named.j2
+    dest: /etc/named.conf
+    owner: root
+    group: root
+    mode: '0755'    
+
+- name: Define zone file
+  tags: conf_dns
+  template:
+    src: dns-zone.j2
+    dest: /var/named/{{zone_name}}.zone
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Define reverse zone file
+  tags: conf_dns
+  template:
+    src: dns-reverse-zone.j2
+    dest: /var/named/{{reverse_zone_name}}.zone
+    owner: root
+    group: root
+    mode: '0755'    
+
+- name: restart and enable dns-server
+  systemd:
+    state: restarted
+    enabled: yes    
+    daemon_reload: yes
+    name: named-chroot 
+
+- name: Define dhcp conf file
+  tags: conf_dhcp
+  template:
+    src: dhcp.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: root
+    mode: '0755'    
+
+- name: restart and enable dhcp
+  systemd:
+    state: restarted
+    enabled: yes    
+    daemon_reload: yes
+    name: dhcpd  
+
+- name: Set selinux for haproxy
+  command: setsebool -P haproxy_connect_any on
+
+- name: Set resolv for local dns
+  command: "nmcli con mod {{ if_name }} ipv4.dns {{ dns_ip }}"
+
+- name: restart NM
+  systemd:
+    state: restarted   
+    name: NetworkManager  
+
+- name: Define haproxy conf file
+  tags: conf_haproxy
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root    
+
+- name: restart and enable haproxy
+  systemd:
+    state: restarted
+    enabled: yes    
+    daemon_reload: yes
+    name: haproxy  
+
+- name: configure firewalld services
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled      
+  with_items:
+    - dns
+    - dhcp
+    - http
+    - https
+
+- name: configure firewalld ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled      
+  with_items:
+    - "6443/tcp"
+    - "22623/tcp"
