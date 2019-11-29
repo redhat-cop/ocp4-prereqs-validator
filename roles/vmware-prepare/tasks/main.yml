@@ -19,8 +19,7 @@
 
 - blockinfile:
     dest: /etc/named.conf
-    block: "{{ lookup('template', 'named.j2') }}"
-  tags: conf_dns        
+    block: "{{ lookup('template', 'named.j2') }}"     
 
 - name: Check if /var/lib/{{zone_name}}.zone already exists
   tags: conf_dns
