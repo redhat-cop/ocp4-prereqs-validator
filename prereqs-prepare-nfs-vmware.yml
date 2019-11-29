@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  roles:
+  - { role: vmware-prereqs }  
+  - { role: ocp-prepare-prereqs }
+  - { role: nfs-server-setup }  
+  gather_facts: no  
