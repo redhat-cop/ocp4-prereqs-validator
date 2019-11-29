@@ -42,7 +42,7 @@
     group: root
     mode: '0755'    
 
-- name: restart and enable dns-server
+- name: Restart and enable dns-server
   systemd:
     state: restarted
     enabled: yes    
@@ -58,7 +58,7 @@
     group: root
     mode: '0755'    
 
-- name: restart and enable dhcp
+- name: Restart and enable dhcp
   systemd:
     state: restarted
     enabled: yes    
@@ -71,7 +71,7 @@
 - name: Set resolv for local dns
   command: "nmcli con mod {{ if_name }} ipv4.dns {{ dns_ip }}"
 
-- name: restart NM
+- name: Restart NM
   systemd:
     state: restarted   
     name: NetworkManager  
@@ -84,14 +84,14 @@
     owner: root
     group: root    
 
-- name: restart and enable haproxy
+- name: Restart and enable haproxy
   systemd:
     state: restarted
     enabled: yes    
     daemon_reload: yes
     name: haproxy  
 
-- name: configure firewalld services
+- name: Configure firewalld services
   firewalld:
     service: "{{ item }}"
     permanent: yes
@@ -102,7 +102,7 @@
     - http
     - https
 
-- name: configure firewalld ports
+- name: Configure firewalld ports
   firewalld:
     port: "{{ item }}"
     permanent: yes

@@ -2,6 +2,6 @@
 # vars file for nfs-server-setup
 
 
-path_export: /exports/
+path_export: /exports/vmware
 networks: "*"
 options_export: "rw,no_root_squash,sync"

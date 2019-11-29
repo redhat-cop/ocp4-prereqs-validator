@@ -26,7 +26,7 @@
     name: nfs-server
     state: restarted
 
-- name: configure firewalld services
+- name: Configure firewalld services
   firewalld:
     service: "{{ item }}"
     permanent: yes
