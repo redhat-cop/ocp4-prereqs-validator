@@ -20,6 +20,7 @@
 - blockinfile:
     dest: /etc/named.conf
     block: "{{ lookup('template', 'named.j2') }}"     
+    marker: "/* rhbr-labs.com zone */"    
 
 - name: Check if /var/lib/{{zone_name}}.zone already exists
   tags: conf_dns
@@ -37,10 +38,10 @@
     state: touch
   when: named_exists.stat.exists == False 
 
-- blockinfile:
-    tags: conf_dns    
+- blockinfile: 
     dest: /var/named/{{zone_name}}.zone
     block: "{{ lookup('template', 'dns-zone.j2') }}"
+    marker: "/* rhbr-labs.com zone */"        
 
 - name: Check if /var/named/{{reverse_zone_name}}.zone already exists
   tags: conf_dns
@@ -58,19 +59,10 @@
     state: touch
   when: named_exists.stat.exists == False 
 
-- blockinfile:
-    tags: conf_dns    
+- blockinfile:  
     dest: /var/named/{{reverse_zone_name}}.zone
     block: "{{ lookup('template', 'dns-reverse-zone.j2') }}"
-
-- name: Define reverse zone file
-  tags: conf_dns
-  template:
-    src: dns-reverse-zone.j2
-    dest: /var/named/{{reverse_zone_name}}.zone
-    owner: root
-    group: root
-    mode: '0755'    
+    marker: "/* rhbr-labs.com zone */"        
 
 - name: Restart and enable dns-server
   systemd:
@@ -79,48 +71,6 @@
     daemon_reload: yes
     name: named-chroot 
 
-- name: Define dhcp conf file
-  tags: conf_dhcp
-  template:
-    src: dhcp.conf.j2
-    dest: /etc/dhcp/dhcpd.conf
-    owner: root
-    group: root
-    mode: '0755'    
-
-- name: Restart and enable dhcp
-  systemd:
-    state: restarted
-    enabled: yes    
-    daemon_reload: yes
-    name: dhcpd  
-
-- name: Set selinux for haproxy
-  command: setsebool -P haproxy_connect_any on
-
-- name: Set resolv for local dns
-  command: "nmcli con mod {{ if_name }} ipv4.dns {{ dns_ip }}"
-
-- name: Restart NM
-  systemd:
-    state: restarted   
-    name: NetworkManager  
-
-- name: Define haproxy conf file
-  tags: conf_haproxy
-  template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
-    owner: root
-    group: root    
-
-- name: Restart and enable haproxy
-  systemd:
-    state: restarted
-    enabled: yes    
-    daemon_reload: yes
-    name: haproxy  
-
 - name: Configure firewalld services
   firewalld:
     service: "{{ item }}"
@@ -128,15 +78,3 @@
     state: enabled      
   with_items:
     - dns
-    - dhcp
-    - http
-    - https
-
-- name: Configure firewalld ports
-  firewalld:
-    port: "{{ item }}"
-    permanent: yes
-    state: enabled      
-  with_items:
-    - "6443/tcp"
-    - "22623/tcp"
