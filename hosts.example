@@ -25,4 +25,4 @@ esx2.rhbr-labs.com ansible_host=10.0.0.12
 esx3.rhbr-labs.com ansible_host=10.0.0.13
 
 [vcsa]
-vcsa.rhbr-labs.com ansible_host=10.0.0.10
+vcsa.rhbr-labs.com ansible_host=10.0.0.5
