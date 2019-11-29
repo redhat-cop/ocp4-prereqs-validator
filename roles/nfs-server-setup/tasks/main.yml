@@ -1,0 +1,27 @@
+---
+# tasks file for nfs-server-setup
+
+- name: Create directory for NFS data
+  file:
+    path: "{{ path_export }}"
+    state: directory
+
+- name: Install nfs packages
+  yum:
+    name: "nfs-utils"
+    state: latest  
+
+- name: Upload config file
+  template:
+    src: exports.j2
+    dest: /etc/exports
+
+- name: Enabled nfs server
+  systemd:
+    name: nfs-server
+    enabled: yes
+
+- name: Start nfs server
+  systemd:
+    name: nfs-server
+    state: restarted

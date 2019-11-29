@@ -1,0 +1,7 @@
+---
+# vars file for nfs-server-setup
+
+
+path_export: /exports/
+networks: "*"
+options_export: "rw,no_root_squash,sync"

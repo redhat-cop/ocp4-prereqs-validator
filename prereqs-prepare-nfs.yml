@@ -2,4 +2,5 @@
 - hosts: localhost
   roles:
   - { role: ocp-prepare-prereqs }
+  - { role: nfs-server-setup }  
   gather_facts: no  
