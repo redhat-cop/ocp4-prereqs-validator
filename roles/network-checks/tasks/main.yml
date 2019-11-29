@@ -1,3 +1,4 @@
 ---
 # tasks file for network-checks
 - import_tasks: dns-checks.yml
+- import_tasks: print-outputs.yml
