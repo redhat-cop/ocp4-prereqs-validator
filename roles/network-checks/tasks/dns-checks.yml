@@ -1,6 +1,7 @@
 ---
 
-- fail: "control_plane_lb_ip = {{ control_plane_lb_ip }} / apps_lb_ip = {{ apps_lb_ip }}"
+- fail:
+    msg: "control_plane_lb_ip = {{ control_plane_lb_ip }} / apps_lb_ip = {{ apps_lb_ip }}"
 
 - name: Check A records for servers
   command: "dig {{ item }} +short"
