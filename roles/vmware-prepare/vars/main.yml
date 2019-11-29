@@ -1,0 +1,19 @@
+---
+# vars file for ocp-prepare-prereqs
+
+##### named.conf
+subnet: "10.0.0.0"
+mask: "16"
+netmask: "255.255.0.0"
+gateway: "10.0.0.2"
+dns_ip: "10.0.0.10"
+dns_forwarder: "10.0.0.1"
+zone_name: "ocp.rhbr-labs.com"
+reverse_zone_name: "0.0.10.in-addr.arpa"
+
+##### zone
+dns_hostname: "infra-services.rhbr-labs.com"
+control_plane_lb_ip: "10.0.0.10"
+apps_lb_ip: "10.0.0.10"
+
+if_name: "ens2"
