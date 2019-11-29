@@ -25,3 +25,13 @@
   systemd:
     name: nfs-server
     state: restarted
+
+- name: configure firewalld services
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled      
+  with_items:
+    - nfs
+    - mountd
+    - rpc-bind 
