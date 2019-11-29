@@ -41,7 +41,7 @@
 - blockinfile: 
     dest: /var/named/{{zone_name}}.zone
     block: "{{ lookup('template', 'dns-zone.j2') }}"
-    marker: "/* rhbr-labs.com zone */"        
+    marker: "; rhbr-labs.com zone "        
 
 - name: Check if /var/named/{{reverse_zone_name}}.zone already exists
   tags: conf_dns
@@ -62,7 +62,7 @@
 - blockinfile:  
     dest: /var/named/{{reverse_zone_name}}.zone
     block: "{{ lookup('template', 'dns-reverse-zone.j2') }}"
-    marker: "/* rhbr-labs.com zone */"        
+    marker: "; rhbr-labs.com zone "        
 
 - name: Restart and enable dns-server
   systemd:
