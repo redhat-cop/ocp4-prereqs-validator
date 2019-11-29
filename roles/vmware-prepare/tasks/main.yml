@@ -1,37 +1,68 @@
 ---
 # tasks file for ocp-prepare-prereqs
 
-- name: Install Required Packages
-  tags: install_pkgs
-  yum:
-    name: "{{ packages }}"
-    state: latest      
-  vars:
-    packages:
-    - bind-chroot
-    - tftp-server 
-    - ipxe-bootimgs
-    - dhcp-server
-    - httpd
-    - haproxy
-
-- name: Define named.conf
+- name: Check if /etc/named.conf already exists
   tags: conf_dns
-  template:
-    src: named.j2
+  stat:
+    path: /etc/named.conf
+  register: named_exists  
+
+- name: Create named.conf if not exists
+  tags: conf_dns
+  file:
     dest: /etc/named.conf
     owner: root
     group: root
     mode: '0755'    
+    state: touch
+  when: named_exists.stat.exists == False 
 
-- name: Define zone file
+- blockinfile:
+    tags: conf_dns    
+    dest: /etc/named.conf
+    block: "{{ lookup('template', 'named-zone.j2') }}"
+
+- name: Check if /var/lib/{{zone_name}}.zone already exists
   tags: conf_dns
-  template:
-    src: dns-zone.j2
+  stat:
+    path: /var/named/{{zone_name}}.zone
+  register: named_exists  
+
+- name: Create /var/lib/{{zone_name}}.zone if not exists
+  tags: conf_dns
+  file:
     dest: /var/named/{{zone_name}}.zone
     owner: root
     group: root
-    mode: '0755'
+    mode: '0755'    
+    state: touch
+  when: named_exists.stat.exists == False 
+
+- blockinfile:
+    tags: conf_dns    
+    dest: /var/named/{{zone_name}}.zone
+    block: "{{ lookup('template', 'dns-zone.j2') }}"
+
+- name: Check if /var/named/{{reverse_zone_name}}.zone already exists
+  tags: conf_dns
+  stat:
+    path: /var/named/{{reverse_zone_name}}.zone
+  register: named_exists  
+
+- name: Create /var/named/{{reverse_zone_name}}.zone if not exists
+  tags: conf_dns
+  file:
+    dest: /var/named/{{reverse_zone_name}}.zone
+    owner: root
+    group: root
+    mode: '0755'    
+    state: touch
+  when: named_exists.stat.exists == False 
+
+- blockinfile:
+    tags: conf_dns    
+    dest: /var/named/{{reverse_zone_name}}.zone
+    block: "{{ lookup('template', 'dns-reverse-zone.j2') }}"
 
 - name: Define reverse zone file
   tags: conf_dns

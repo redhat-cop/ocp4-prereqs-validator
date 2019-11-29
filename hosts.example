@@ -18,3 +18,11 @@ worker-2.ocp.rhbr-labs.com ansible_host=10.0.0.72 macaddress="00:50:56:a1:34:4b"
 etcd-0.ocp.rhbr-labs.com ansible_host=10.0.0.50
 etcd-1.ocp.rhbr-labs.com ansible_host=10.0.0.51
 etcd-2.ocp.rhbr-labs.com ansible_host=10.0.0.52
+
+[esx]
+esx1.rhbr-labs.com ansible_host=10.0.0.11
+esx2.rhbr-labs.com ansible_host=10.0.0.12
+esx3.rhbr-labs.com ansible_host=10.0.0.13
+
+[vcsa]
+vcsa.rhbr-labs.com ansible_host=10.0.0.10
