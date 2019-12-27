@@ -6,7 +6,9 @@ This repository contains playbooks and roles to help the preparation and validat
 
 **Network Checks**
 
-This role aims to validate the DNS records. It checks the A, PTR and SRV records based on the servers in hosts file. It creates the file dns-checks-output.txt which contains the result of each validation. Example:
+This role aims to validate the DNS records. It checks the A, PTR and SRV records based on the servers in hosts file. It creates the file dns-checks-output.txt which contains the result of each validation. 
+
+Example:
 
 ![Results](imgs/example.png)
 
