@@ -30,7 +30,7 @@ Simple role to deploy a NFS server to be used as backend for RWX persistent volu
 
 ### How to use it
 
-These roles were tested in a RHEL 8 and Ansible 2.8.
+These roles were tested in a RHEL 8 server and Ansible 2.8.
 
 ### Prepare workstation
 
