@@ -1,4 +1,4 @@
-# ocp4-prereqs-validator
+# Pre-requisites Validator for OpenShift 4.2 on vSphere
 
 This repository contains playbooks and roles to help to prepare and validate the pre-requisites needed for a UPI OpenShift deployment.
 
