@@ -1,6 +1,6 @@
 # Pre-requisites Validator for OpenShift 4.2 on vSphere
 
-This repository contains playbooks and roles to help to prepare and validate the pre-requisites needed for a UPI OpenShift deployment.
+This repository contains playbooks and roles to help the preparation and validation of the pre-requisites needed for a OpenShift UPI deployment over vSphere.
 
 ### Roles
 
