@@ -1,9 +1,6 @@
 ---
 # vars file for ocp-prepare-prereqs
 
-base_name: "rhbr-labs.com"
-cluster_name: "ocp"
-
 api_url: "api.{{cluster_name}}.{{base_name}}"
 api_int_url: "api-int.{{cluster_name}}.{{base_name}}"
 apps_wildcard: "*.apps.{{cluster_name}}.{{base_name}}"

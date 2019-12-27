@@ -9,8 +9,6 @@
   vars:
     packages:
     - bind-chroot
-    - tftp-server 
-    - ipxe-bootimgs
     - dhcp-server
     - httpd
     - haproxy

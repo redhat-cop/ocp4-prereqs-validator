@@ -6,3 +6,5 @@
   vars:
   - control_plane_lb_ip: "10.0.0.10"
   - apps_lb_ip: "10.0.0.10"
+  - base_name: "rhbr-labs.com"
+  - cluster_name: "ocp"
